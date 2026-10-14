@@ -56,4 +56,6 @@ npm run dev -- --env-file .env
 1. Update `CHANGELOG.md` and bump `version` in `package.json`.
 2. Open a pull request; CI runs format, typecheck, tests and build.
 3. Merging to `main` publishes the new version to npm automatically (the
-   workflow skips versions that already exist).
+   workflow skips versions that already exist). Authentication uses npm
+   trusted publishing (OIDC) configured for this repository and
+   `publish.yml`; an `NPM_TOKEN` secret is used instead when present.
