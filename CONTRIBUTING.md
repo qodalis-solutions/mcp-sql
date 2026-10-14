@@ -5,7 +5,7 @@ Thanks for helping improve `@qodalis/mcp-sqlserver`.
 ## Development setup
 
 ```bash
-git clone https://github.com/qodalis-solutions/mcp-sqlserver.git
+git clone https://github.com/qodalis-solutions/mcp-sql.git
 cd mcp-sqlserver
 npm install
 npm test            # unit tests (no database needed)

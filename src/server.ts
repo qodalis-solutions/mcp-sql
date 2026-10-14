@@ -56,7 +56,7 @@ export const createServer = (deps: ServerDependencies): McpServer => {
         {
             name: SERVER_NAME,
             version: SERVER_VERSION,
-            websiteUrl: 'https://github.com/qodalis-solutions/mcp-sqlserver',
+            websiteUrl: 'https://github.com/qodalis-solutions/mcp-sql',
         },
         { instructions: buildInstructions(deps.config) },
     );

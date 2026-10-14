@@ -46,11 +46,11 @@
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "https://github.com/qodalis-solutions/mcp-sqlserver"
+        "url": "https://github.com/qodalis-solutions/mcp-sql"
     },
-    "homepage": "https://github.com/qodalis-solutions/mcp-sqlserver#readme",
+    "homepage": "https://github.com/qodalis-solutions/mcp-sql#readme",
     "bugs": {
-        "url": "https://github.com/qodalis-solutions/mcp-sqlserver/issues"
+        "url": "https://github.com/qodalis-solutions/mcp-sql/issues"
     },
     "publishConfig": {
         "access": "public"
