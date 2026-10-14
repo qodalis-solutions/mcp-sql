@@ -136,6 +136,15 @@ It rejects `INSERT`/`UPDATE`/`DELETE`/`MERGE` on persistent tables, DDL,
 guard strips comments and string literals before matching so neither hidden nor
 quoted keywords confuse it.
 
+### Write mode
+
+Set `SQLSERVER_READ_ONLY=false` on a server entry to let `execute_query` run
+`INSERT`, `UPDATE`, `DELETE`, `MERGE`, `EXEC` and DDL. Even then the
+server-level statements listed above stay blocked, and SQL Server still enforces
+the login's own permissions: the guard can only ever be stricter than the login,
+never looser. Give write-enabled servers a distinct name in your client config so
+using one is a deliberate choice.
+
 The guard is defence in depth. Always connect with a least-privilege login as
 well.
 

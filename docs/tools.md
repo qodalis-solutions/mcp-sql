@@ -7,7 +7,15 @@ allowlisted names (matched case-insensitively).
 Result sets are returned as compact JSON:
 
 ```json
-{ "columns": ["Id", "Name"], "rowCount": 2, "rows": [[1, "a"], [2, "b"]], "truncated": false }
+{
+  "columns": ["Id", "Name"],
+  "rowCount": 2,
+  "rows": [
+    [1, "a"],
+    [2, "b"]
+  ],
+  "truncated": false
+}
 ```
 
 `truncated: true` means the `SQLSERVER_MAX_ROWS` (or per-call) cap was hit.
@@ -34,11 +42,11 @@ Columns: `name`, `state`, `recoveryModel`, `compatibilityLevel`, `collation`, `c
 
 ## list_tables
 
-| Argument | Type | Default | Description |
-| --- | --- | --- | --- |
-| `schema` | string | all | Exact schema name. |
-| `nameContains` | string | none | Case-insensitive substring of the table name. |
-| `includeRowCounts` | boolean | `true` | Approximate row count from `sys.dm_db_partition_stats`. |
+| Argument           | Type    | Default | Description                                             |
+| ------------------ | ------- | ------- | ------------------------------------------------------- |
+| `schema`           | string  | all     | Exact schema name.                                      |
+| `nameContains`     | string  | none    | Case-insensitive substring of the table name.           |
+| `includeRowCounts` | boolean | `true`  | Approximate row count from `sys.dm_db_partition_stats`. |
 
 Columns: `schema`, `name`, `rowCount` (when requested), `createDate`, `modifyDate`.
 
@@ -48,18 +56,18 @@ Arguments `schema`, `nameContains`. Columns: `schema`, `name`, `createDate`, `mo
 
 ## list_procedures
 
-| Argument | Type | Default |
-| --- | --- | --- |
-| `kind` | `all` \| `procedure` \| `function` | `all` |
-| `schema`, `nameContains` | string | none |
+| Argument                 | Type                               | Default |
+| ------------------------ | ---------------------------------- | ------- |
+| `kind`                   | `all` \| `procedure` \| `function` | `all`   |
+| `schema`, `nameContains` | string                             | none    |
 
 Columns: `schema`, `name`, `kind`, `createDate`, `modifyDate`.
 
 ## describe_table
 
-| Argument | Type | Description |
-| --- | --- | --- |
-| `table` | string | `name` or `schema.name`; brackets allowed. |
+| Argument | Type   | Description                                          |
+| -------- | ------ | ---------------------------------------------------- |
+| `table`  | string | `name` or `schema.name`; brackets allowed.           |
 | `schema` | string | Used when `table` has no schema part. Default `dbo`. |
 
 Returns:
@@ -67,9 +75,40 @@ Returns:
 ```json
 {
   "table": "dbo.Orders",
-  "columns": [{ "name": "Id", "type": "int", "nullable": false, "identity": true, "computed": false, "default": null }],
-  "indexes": [{ "name": "PK_Orders", "type": "CLUSTERED", "is_primary_key": true, "is_unique": true, "is_unique_constraint": false, "filter": null, "columns": "Id", "included": null }],
-  "foreignKeys": [{ "name": "FK_Orders_Customers", "direction": "outgoing", "fromTable": "dbo.Orders", "fromColumns": "CustomerId", "toTable": "dbo.Customers", "toColumns": "Id", "onDelete": "NO_ACTION", "onUpdate": "NO_ACTION" }]
+  "columns": [
+    {
+      "name": "Id",
+      "type": "int",
+      "nullable": false,
+      "identity": true,
+      "computed": false,
+      "default": null
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PK_Orders",
+      "type": "CLUSTERED",
+      "is_primary_key": true,
+      "is_unique": true,
+      "is_unique_constraint": false,
+      "filter": null,
+      "columns": "Id",
+      "included": null
+    }
+  ],
+  "foreignKeys": [
+    {
+      "name": "FK_Orders_Customers",
+      "direction": "outgoing",
+      "fromTable": "dbo.Orders",
+      "fromColumns": "CustomerId",
+      "toTable": "dbo.Customers",
+      "toColumns": "Id",
+      "onDelete": "NO_ACTION",
+      "onUpdate": "NO_ACTION"
+    }
+  ]
 }
 ```
 
@@ -83,11 +122,11 @@ Columns: `name`, `fromTable`, `fromColumns`, `toTable`, `toColumns`,
 
 ## get_table_stats
 
-| Argument | Type | Default | Description |
-| --- | --- | --- | --- |
-| `table` | string | none | One table. Omit for the largest tables. |
-| `schema` | string | `dbo` | |
-| `top` | integer | `25` | Number of tables when `table` is omitted. |
+| Argument | Type    | Default | Description                               |
+| -------- | ------- | ------- | ----------------------------------------- |
+| `table`  | string  | none    | One table. Omit for the largest tables.   |
+| `schema` | string  | `dbo`   |                                           |
+| `top`    | integer | `25`    | Number of tables when `table` is omitted. |
 
 Columns: `schema`, `table`, `rowCount`, `reservedKb`, `dataKb`, `indexKb`,
 `indexCount`, `partitionCount`.
@@ -100,32 +139,40 @@ definition (for example a table) or does not exist.
 
 ## search_objects
 
-| Argument | Type | Default | Description |
-| --- | --- | --- | --- |
-| `pattern` | string | required | Case-insensitive substring. `%`, `_` and `[` are escaped. |
-| `types` | array of `table` \| `view` \| `procedure` \| `function` \| `column` | all | Kinds to search. |
-| `limit` | integer | `100` | Maximum matches. |
+| Argument  | Type                                                                | Default  | Description                                               |
+| --------- | ------------------------------------------------------------------- | -------- | --------------------------------------------------------- |
+| `pattern` | string                                                              | required | Case-insensitive substring. `%`, `_` and `[` are escaped. |
+| `types`   | array of `table` \| `view` \| `procedure` \| `function` \| `column` | all      | Kinds to search.                                          |
+| `limit`   | integer                                                             | `100`    | Maximum matches.                                          |
 
 Columns: `kind`, `object` (`schema.name`), `column` (for column matches).
 
 ## sample_data
 
-| Argument | Type | Default | Description |
-| --- | --- | --- | --- |
-| `table` | string | required | Table or view. |
-| `schema` | string | `dbo` | |
-| `columns` | string[] | all | Column subset. |
-| `limit` | integer | `10` | Rows, max 1000. |
-| `random` | boolean | `false` | `ORDER BY NEWID()` sampling. |
+| Argument  | Type     | Default  | Description                  |
+| --------- | -------- | -------- | ---------------------------- |
+| `table`   | string   | required | Table or view.               |
+| `schema`  | string   | `dbo`    |                              |
+| `columns` | string[] | all      | Column subset.               |
+| `limit`   | integer  | `10`     | Rows, max 1000.              |
+| `random`  | boolean  | `false`  | `ORDER BY NEWID()` sampling. |
 
 ## execute_query
 
-| Argument | Type | Default | Description |
-| --- | --- | --- | --- |
-| `sql` | string | required | T-SQL batch. |
-| `params` | object | none | Named parameters, referenced as `@name`. Values: string, number, boolean, null. |
-| `maxRows` | integer | server cap | Per-call cap, never above `SQLSERVER_MAX_ROWS`. |
-| `format` | `json` \| `markdown` \| `csv` | `json` | Output format. |
+| Argument  | Type                          | Default    | Description                                                                     |
+| --------- | ----------------------------- | ---------- | ------------------------------------------------------------------------------- |
+| `sql`     | string                        | required   | T-SQL batch.                                                                    |
+| `params`  | object                        | none       | Named parameters, referenced as `@name`. Values: string, number, boolean, null. |
+| `maxRows` | integer                       | server cap | Per-call cap, never above `SQLSERVER_MAX_ROWS`.                                 |
+| `format`  | `json` \| `markdown` \| `csv` | `json`     | Output format.                                                                  |
+
+In read-only mode (the default, `SQLSERVER_READ_ONLY=true`) the batch is
+checked by the statement guard before it is sent: reads, CTEs, variables and
+`#temp`/`@table` work pass; persistent writes, DDL, `EXEC`, `DBCC` and
+`WAITFOR` are rejected with an `isError` result and no round trip to the
+server. With `SQLSERVER_READ_ONLY=false` data and schema changes are allowed;
+`xp_cmdshell`, configuration, backup/restore, logins and linked-server access
+are refused in both modes.
 
 Statements without a result set report `rowsAffected`; `PRINT` output is
 returned under `messages`. SQL errors come back as `isError` results with the
