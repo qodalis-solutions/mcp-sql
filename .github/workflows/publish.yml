@@ -34,11 +34,12 @@ jobs:
           npm run build
           npm run typecheck
           npm test
+          bash scripts/check-packed.sh
 
       - name: Publish packages that are not on npm yet
         run: |
           set -e
-          for dir in packages/core packages/sqlserver packages/postgres; do
+          for dir in packages/core packages/sqlserver packages/postgres packages/mysql packages/oracle packages/sqlite; do
             [ -f "$dir/package.json" ] || continue
             name=$(node -p "require('./$dir/package.json').name")
             version=$(node -p "require('./$dir/package.json').version")

@@ -1,0 +1,58 @@
+{
+  "name": "@qodalis/mcp-sqlite",
+  "version": "0.3.0",
+  "description": "Model Context Protocol (MCP) server for SQLite files using the Node.js built-in driver \u2014 read-only guard, token-efficient results, no native dependencies.",
+  "type": "module",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "bin": {
+    "mcp-sqlite": "dist/src/cli.js"
+  },
+  "files": [
+    "dist/src",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "clean": "rm -rf dist",
+    "dev": "tsx src/cli.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --root ../.. --project sqlite",
+    "test:integration": "RUN_INTEGRATION=1 vitest run --root ../.. --project sqlite-integration",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "sqlite",
+    "sqlite3",
+    "database",
+    "claude",
+    "cursor",
+    "ai"
+  ],
+  "author": "Nicolae Lupei <nicolae.lupei@qodalis.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qodalis-solutions/mcp-sql.git",
+    "directory": "packages/sqlite"
+  },
+  "homepage": "https://github.com/qodalis-solutions/mcp-sql#readme",
+  "bugs": {
+    "url": "https://github.com/qodalis-solutions/mcp-sql/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "^2.3.1",
+    "@qodalis/mcp-sql-core": "^0.3.0",
+    "zod": "^4.6.7"
+  }
+}

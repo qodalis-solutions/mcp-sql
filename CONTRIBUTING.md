@@ -8,6 +8,9 @@ Thanks for helping improve the Qodalis SQL MCP servers.
 packages/core        @qodalis/mcp-sql-core   shared runtime: pool manager, guard, tools, CLI, server
 packages/sqlserver   @qodalis/mcp-sqlserver  SQL Server dialect (mssql driver)
 packages/postgres    @qodalis/mcp-postgres   PostgreSQL dialect (pg driver)
+packages/mysql       @qodalis/mcp-mysql      MySQL / MariaDB dialect (mysql2 driver)
+packages/oracle      @qodalis/mcp-oracle     Oracle dialect (oracledb thin mode)
+packages/sqlite      @qodalis/mcp-sqlite     SQLite dialect (node:sqlite, Node 22.13+)
 docs/                architecture and tool reference shared by every dialect
 ```
 
@@ -29,7 +32,7 @@ npm run typecheck
 Run a server against a real database during development:
 
 ```bash
-cd packages/sqlserver          # or packages/postgres
+cd packages/sqlserver          # or postgres, mysql, oracle, sqlite
 cp .env.example .env           # edit credentials
 npm run dev -- --env-file .env
 ```
@@ -39,7 +42,7 @@ npm run dev -- --env-file .env
 - Unit tests live in each package's `tests/unit` and run without a database.
   They drive the pool manager and executor through small fakes
   (`packages/core/src/testing` and each package's `tests/helpers`).
-  `npx vitest run --project core|sqlserver|postgres` runs one package.
+  `npx vitest run --project <core|sqlserver|postgres|mysql|oracle|sqlite>` runs one package.
 - The live suites in `packages/*/tests/integration` need a reachable server
   and skip themselves when the variables are missing:
 
@@ -51,11 +54,25 @@ npm run dev -- --env-file .env
     -e POSTGRES_DB=mcp -p 5432:5432 postgres:17-alpine
   RUN_INTEGRATION=1 POSTGRES_HOST=localhost POSTGRES_USER=mcp POSTGRES_PASSWORD=mcp \
   POSTGRES_DATABASE=mcp POSTGRES_SSL=false npx vitest run --project postgres-integration
+
+  docker run -d --name mcp-sql-mysql -e MYSQL_ROOT_PASSWORD=root -e MYSQL_USER=mcp \
+    -e MYSQL_PASSWORD=mcp -e MYSQL_DATABASE=mcp -p 3306:3306 mysql:8.4
+  RUN_INTEGRATION=1 MYSQL_HOST=127.0.0.1 MYSQL_USER=mcp MYSQL_PASSWORD=mcp \
+  MYSQL_DATABASE=mcp MYSQL_SSL=false npx vitest run --project mysql-integration
+
+  docker run -d --name mcp-sql-oracle -e ORACLE_PASSWORD=oracle -e APP_USER=mcp \
+    -e APP_USER_PASSWORD=mcp -p 1521:1521 gvenzl/oracle-free:23-slim-faststart
+  RUN_INTEGRATION=1 ORACLE_HOST=127.0.0.1 ORACLE_SERVICE=FREEPDB1 ORACLE_USER=mcp \
+  ORACLE_PASSWORD=mcp ORACLE_ADMIN_PASSWORD=oracle npx vitest run --project oracle-integration
+
+  npx vitest run --project sqlite-integration   # needs no service
   ```
 
-  The SQL Server suite is read-only. The PostgreSQL suite creates and drops
-  its own `mcp_it` schema, so point it at a disposable database; CI runs it
-  against a `postgres:17` service on every push.
+  The SQL Server suite is read-only. The PostgreSQL, MySQL and Oracle suites
+  create and drop their own objects, so point them at disposable databases;
+  CI runs them against `postgres:17`, `mysql:8.4` and
+  `gvenzl/oracle-free:23` services on every push. The SQLite suite uses a
+  temporary file.
 
 - `packages/*/scripts/check-reconnect.mts` starts the built server over stdio
   behind a local TCP proxy, kills and restores the proxy, and checks that the
@@ -64,6 +81,10 @@ npm run dev -- --env-file .env
   root.
 
 - Coverage thresholds are enforced by `npm run test:coverage`.
+- `scripts/check-packed.sh` packs every package and installs the tarballs
+  outside the workspace, then runs the CLIs. Run it before a release: inside
+  the workspace a missing dependency still resolves through the symlinked
+  `node_modules`, so only this proves the published artefacts install.
 
 ## Adding a dialect
 

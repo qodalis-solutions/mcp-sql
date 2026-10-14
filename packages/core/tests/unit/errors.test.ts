@@ -27,6 +27,57 @@ describe('isConnectionError', () => {
         expect(isConnectionError(new Error(message))).toBe(true);
     });
 
+    it.each([
+        'PROTOCOL_CONNECTION_LOST',
+        'PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR',
+        'PROTOCOL_ENQUEUE_AFTER_QUIT',
+        'PROTOCOL_SEQUENCE_TIMEOUT',
+        'ER_SERVER_SHUTDOWN',
+        'ETIMEDOUT',
+    ])('recognises the mysql2 driver code %s', (code) => {
+        expect(isConnectionError(Object.assign(new Error('mysql failure'), { code }))).toBe(true);
+    });
+
+    it('does not treat MySQL access denied as a connection error', () => {
+        expect(
+            isConnectionError(
+                Object.assign(new Error("Access denied for user 'reader'@'%'"), {
+                    code: 'ER_ACCESS_DENIED_ERROR',
+                }),
+            ),
+        ).toBe(false);
+    });
+
+    it.each([
+        ['ORA-03113', 'ORA-03113: end-of-file on communication channel'],
+        ['ORA-03114', 'ORA-03114: not connected to ORACLE'],
+        ['ORA-03135', 'ORA-03135: connection lost contact'],
+        ['ORA-12541', 'ORA-12541: Cannot connect. No listener at host'],
+        ['ORA-12170', 'ORA-12170: Cannot connect. TCP connect timeout'],
+        ['ORA-01033', 'ORA-01033: ORACLE initialization or shutdown in progress'],
+        ['ORA-00028', 'ORA-00028: your session has been killed'],
+        ['NJS-500', 'NJS-500: connection to the Oracle Database was broken'],
+        ['NJS-510', 'NJS-510: connection to host was terminated by the listener'],
+        ['NJS-503', 'NJS-503: connection to host could not be established'],
+        ['NJS-511', 'NJS-511: connection to host could not be established'],
+    ])('recognises the oracledb error %s', (code, message) => {
+        expect(isConnectionError(Object.assign(new Error(message), { code }))).toBe(true);
+        expect(isConnectionError(new Error(message))).toBe(true);
+    });
+
+    it('does not treat an Oracle invalid login as a connection error', () => {
+        expect(
+            isConnectionError(
+                Object.assign(
+                    new Error('ORA-01017: invalid credential or not authorized; logon denied'),
+                    {
+                        code: 'ORA-01017',
+                    },
+                ),
+            ),
+        ).toBe(false);
+    });
+
     it('does not treat PostgreSQL authentication failures as connection errors', () => {
         expect(
             isConnectionError(

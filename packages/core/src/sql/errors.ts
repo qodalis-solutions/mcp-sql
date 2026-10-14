@@ -23,7 +23,32 @@ const CONNECTION_CODES = new Set([
     '57P01',
     '57P02',
     '57P03',
+    // mysql2
+    'PROTOCOL_CONNECTION_LOST',
+    'PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR',
+    'PROTOCOL_ENQUEUE_AFTER_QUIT',
+    'PROTOCOL_SEQUENCE_TIMEOUT',
+    'ER_SERVER_SHUTDOWN',
+    'ETIMEDOUT',
+    // oracledb (thin mode) and Oracle server errors
+    'ORA-03113',
+    'ORA-03114',
+    'ORA-03135',
+    'ORA-12541',
+    'ORA-12514',
+    'ORA-12170',
+    'ORA-01033',
+    'ORA-01089',
+    'ORA-00028',
+    'NJS-500',
+    'NJS-503',
+    'NJS-510',
+    'NJS-511',
+    'NJS-518',
 ]);
+
+/** Authentication failures are never retried, whatever the transport looks like. */
+const LOGIN_CODES = new Set(['ELOGIN', '28P01', 'ER_ACCESS_DENIED_ERROR', 'ORA-01017']);
 
 const CONNECTION_MESSAGES = [
     /connection is closed/i,
@@ -40,6 +65,8 @@ const CONNECTION_MESSAGES = [
     /server closed the connection/i,
     /^timeout expired$/i,
     /database system is (starting up|shutting down)/i,
+    /\bORA-(03113|03114|03135|12541|12514|12170|01033|01089|00028)\b/,
+    /\bNJS-(500|503|510|511|518)\b/,
 ];
 
 type ErrorLike = Error & {
@@ -65,7 +92,7 @@ export const isConnectionError = (value: unknown): boolean => {
     if (typeof error.code === 'string' && CONNECTION_CODES.has(error.code)) {
         return true;
     }
-    if (typeof error.code === 'string' && error.code === 'ELOGIN') {
+    if (typeof error.code === 'string' && LOGIN_CODES.has(error.code)) {
         return false;
     }
     if (CONNECTION_MESSAGES.some((pattern) => pattern.test(error.message))) {

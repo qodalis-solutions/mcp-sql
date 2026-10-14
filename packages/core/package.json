@@ -1,6 +1,6 @@
 {
   "name": "@qodalis/mcp-sql-core",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Shared core for the Qodalis resilient SQL MCP servers: self-healing pool manager, statement guard, result formatting, generic tools and server/CLI wiring.",
   "type": "module",
   "main": "dist/src/index.js",
@@ -42,7 +42,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/qodalis-solutions/mcp-sql",
+    "url": "git+https://github.com/qodalis-solutions/mcp-sql.git",
     "directory": "packages/core"
   },
   "homepage": "https://github.com/qodalis-solutions/mcp-sql#readme",

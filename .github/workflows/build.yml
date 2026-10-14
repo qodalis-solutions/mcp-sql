@@ -26,6 +26,31 @@ jobs:
           --health-interval 5s
           --health-timeout 5s
           --health-retries 10
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_USER: mcp
+          MYSQL_PASSWORD: mcp
+          MYSQL_DATABASE: mcp
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd "mysqladmin ping -h 127.0.0.1 -umcp -pmcp --silent"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+      oracle:
+        image: gvenzl/oracle-free:23-slim-faststart
+        env:
+          ORACLE_PASSWORD: oracle
+          APP_USER: mcp
+          APP_USER_PASSWORD: mcp
+        ports: ['1521:1521']
+        options: >-
+          --health-cmd "healthcheck.sh"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 30
 
     steps:
       - uses: actions/checkout@v4
@@ -63,7 +88,29 @@ jobs:
           POSTGRES_DATABASE: mcp
           POSTGRES_SSL: 'false'
 
-      - name: Smoke-test the CLIs
-        run: |
-          node packages/sqlserver/dist/src/cli.js --version
-          node packages/postgres/dist/src/cli.js --version
+      - name: MySQL integration tests
+        run: npx vitest run --project mysql-integration
+        env:
+          RUN_INTEGRATION: '1'
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_USER: mcp
+          MYSQL_PASSWORD: mcp
+          MYSQL_DATABASE: mcp
+          MYSQL_SSL: 'false'
+
+      - name: Oracle integration tests
+        run: npx vitest run --project oracle-integration --testTimeout=20000
+        env:
+          RUN_INTEGRATION: '1'
+          ORACLE_HOST: 127.0.0.1
+          ORACLE_PORT: '1521'
+          ORACLE_SERVICE: FREEPDB1
+          ORACLE_USER: mcp
+          ORACLE_PASSWORD: mcp
+          ORACLE_ADMIN_PASSWORD: oracle
+
+      - name: SQLite integration tests
+        run: npx vitest run --project sqlite-integration
+
+      - name: Install the packed tarballs outside the workspace and run the CLIs
+        run: bash scripts/check-packed.sh

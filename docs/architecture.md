@@ -18,6 +18,10 @@ the pool manager, the statement guard, result formatting, the two
 dialect-neutral tools (`execute_query`, `test_connection`), the server and the
 CLI. A dialect package supplies a `Dialect` (guard profile, identifier style,
 LIKE escaping, probe SQL), an executor, a pool adapter and its catalog tools.
+Six packages share it today: SQL Server (`mssql`), PostgreSQL (`pg` +
+`pg-cursor`), MySQL/MariaDB (`mysql2`), Oracle (`oracledb` thin mode) and
+SQLite (`node:sqlite`, where the "pool" is one open file handle that reopens
+when the file is replaced).
 
 Supporting modules: `config.ts` (environment parsing), `env-file.ts`,
 `sql/guard.ts` (statement guard), `sql/identifiers.ts` (safe object names),

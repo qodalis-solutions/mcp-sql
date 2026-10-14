@@ -4,6 +4,13 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.3.0] - 2026-10-14
+
+### Changed
+
+- Declares `@modelcontextprotocol/server` as a direct dependency for the
+  exported types. No behaviour change; released in lockstep with the core.
+
 ## [0.2.0] - 2026-10-14
 
 ### Added
