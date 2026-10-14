@@ -77,7 +77,7 @@ respectively. A `.env` file works too:
 { "command": "npx", "args": ["-y", "@qodalis/mcp-postgres", "--env-file", "/path/to/.env"] }
 ```
 
-Pin a version in production configs (`@qodalis/mcp-postgres@0.2.0`) so an
+Pin a version in production configs (`@qodalis/mcp-postgres@0.3.0`) so an
 upgrade is a deliberate change.
 
 ## Configuration

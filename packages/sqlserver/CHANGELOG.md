@@ -4,6 +4,14 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.3.0] - 2026-10-14
+
+### Fixed
+
+- 0.2.0 could not be installed from npm: the manifest did not declare the
+  dependency on `@qodalis/mcp-sql-core` (the workspace symlink hid it). Do not
+  use 0.2.0.
+
 ## [0.2.0] - 2026-10-14
 
 ### Changed

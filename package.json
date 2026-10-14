@@ -1,8 +1,8 @@
 {
   "name": "@qodalis/mcp-sql-workspace",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
-  "description": "Monorepo for the Qodalis resilient SQL MCP servers (@qodalis/mcp-sql-core, @qodalis/mcp-sqlserver, @qodalis/mcp-postgres)",
+  "description": "Monorepo for the Qodalis resilient SQL MCP servers (@qodalis/mcp-sql-core, @qodalis/mcp-sqlserver, @qodalis/mcp-postgres, @qodalis/mcp-mysql, @qodalis/mcp-oracle, @qodalis/mcp-sqlite)",
   "type": "module",
   "engines": {
     "node": ">=20"
@@ -17,7 +17,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "test:integration": "RUN_INTEGRATION=1 vitest run --project sqlserver-integration --project postgres-integration",
+    "test:integration": "RUN_INTEGRATION=1 vitest run --project sqlserver-integration --project postgres-integration --project mysql-integration --project oracle-integration --project sqlite-integration",
     "format": "prettier --write \"packages/*/src/**/*.ts\" \"packages/*/tests/**/*.ts\" \"packages/*/scripts/**/*.mts\" \"**/*.md\" \"!**/node_modules/**\" \"!**/dist/**\"",
     "check-format": "prettier --check \"packages/*/src/**/*.ts\" \"packages/*/tests/**/*.ts\""
   },
@@ -25,7 +25,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/qodalis-solutions/mcp-sql"
+    "url": "git+https://github.com/qodalis-solutions/mcp-sql.git"
   },
   "devDependencies": {
     "@modelcontextprotocol/client": "^2.3.1",

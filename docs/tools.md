@@ -183,6 +183,26 @@ placeholders and a multi-statement batch cannot carry parameters; `bigint`
 values that fit in a JavaScript number are returned as numbers, larger ones as
 strings.
 
+On MySQL and MariaDB, `schema` means database and defaults to
+`MYSQL_DATABASE`; `@name` parameters become `?` placeholders (a query that
+binds parameters cannot also use `@user` variables); random sampling uses
+`ORDER BY RAND()`; hitting the row cap closes the streaming connection, which
+the pool replaces transparently.
+
+On SQLite, `database` is the file key (the basename without extension, or
+`memory` for `:memory:`) and `schema` is the attached database name (`main`,
+`temp` or an `ATTACH`ed alias); `list_procedures` always returns an empty list
+with a note; `get_table_stats` reports sizes only when SQLite was built with
+`dbstat`; parameters work with a single statement only; integers beyond 2^53
+come back as strings.
+
+On Oracle a session lives in one database, so `database` (and
+`ORACLE_DATABASE` / `ORACLE_DATABASES`) selects a schema and `list_databases`
+lists schemas; unquoted object names are upper-cased; `@name` parameters
+become `:b_name` binds; a multi-statement batch runs sequentially on one
+session, so private temporary tables carry over; random sampling uses
+`ORDER BY dbms_random.value`.
+
 Statements without a result set report `rowsAffected`; `PRINT` output is
 returned under `messages`. SQL errors come back as `isError` results with the
 driver code, SQL error number and line.
