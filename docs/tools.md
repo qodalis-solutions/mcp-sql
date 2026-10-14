@@ -1,7 +1,10 @@
 # Tool reference
 
-Every tool accepts an optional `database` argument. It defaults to
-`SQLSERVER_DATABASE` and, when `SQLSERVER_DATABASES` is set, must be one of the
+The thirteen tools are the same in every dialect package; the examples below
+use `SQLSERVER_*` names, and `@qodalis/mcp-postgres` reads the matching
+`POSTGRES_*` variables. Every tool accepts an optional `database` argument. It
+defaults to the configured default database and, when the allowlist
+(`SQLSERVER_DATABASES` / `POSTGRES_DATABASES`) is set, must be one of the
 allowlisted names (matched case-insensitively).
 
 Result sets are returned as compact JSON:
@@ -18,7 +21,7 @@ Result sets are returned as compact JSON:
 }
 ```
 
-`truncated: true` means the `SQLSERVER_MAX_ROWS` (or per-call) cap was hit.
+`truncated: true` means the `*_MAX_ROWS` (or per-call) cap was hit.
 Dates are ISO 8601 strings, binary values are `0x…` hex, `bigint` values are
 strings, `NULL` is `null`.
 
@@ -149,30 +152,36 @@ Columns: `kind`, `object` (`schema.name`), `column` (for column matches).
 
 ## sample_data
 
-| Argument  | Type     | Default  | Description                  |
-| --------- | -------- | -------- | ---------------------------- |
-| `table`   | string   | required | Table or view.               |
-| `schema`  | string   | `dbo`    |                              |
-| `columns` | string[] | all      | Column subset.               |
-| `limit`   | integer  | `10`     | Rows, max 1000.              |
-| `random`  | boolean  | `false`  | `ORDER BY NEWID()` sampling. |
+| Argument  | Type     | Default  | Description                                             |
+| --------- | -------- | -------- | ------------------------------------------------------- |
+| `table`   | string   | required | Table or view.                                          |
+| `schema`  | string   | `dbo`    |                                                         |
+| `columns` | string[] | all      | Column subset.                                          |
+| `limit`   | integer  | `10`     | Rows, max 1000.                                         |
+| `random`  | boolean  | `false`  | Random rows (`ORDER BY NEWID()` / `ORDER BY random()`). |
 
 ## execute_query
 
 | Argument  | Type                          | Default    | Description                                                                     |
 | --------- | ----------------------------- | ---------- | ------------------------------------------------------------------------------- |
-| `sql`     | string                        | required   | T-SQL batch.                                                                    |
+| `sql`     | string                        | required   | SQL batch in the server's dialect.                                              |
 | `params`  | object                        | none       | Named parameters, referenced as `@name`. Values: string, number, boolean, null. |
-| `maxRows` | integer                       | server cap | Per-call cap, never above `SQLSERVER_MAX_ROWS`.                                 |
+| `maxRows` | integer                       | server cap | Per-call cap, never above the configured `*_MAX_ROWS`.                          |
 | `format`  | `json` \| `markdown` \| `csv` | `json`     | Output format.                                                                  |
 
-In read-only mode (the default, `SQLSERVER_READ_ONLY=true`) the batch is
-checked by the statement guard before it is sent: reads, CTEs, variables and
-`#temp`/`@table` work pass; persistent writes, DDL, `EXEC`, `DBCC` and
-`WAITFOR` are rejected with an `isError` result and no round trip to the
-server. With `SQLSERVER_READ_ONLY=false` data and schema changes are allowed;
-`xp_cmdshell`, configuration, backup/restore, logins and linked-server access
-are refused in both modes.
+In read-only mode (the default, `*_READ_ONLY=true`) the batch is checked by
+the statement guard before it is sent: reads, CTEs and session-local temporary
+objects pass (`#temp`/`@table` on SQL Server, `TEMP` tables and `pg_temp` on
+PostgreSQL); persistent writes, DDL and procedural execution are rejected with
+an `isError` result and no round trip to the server. With `*_READ_ONLY=false`
+data and schema changes are allowed; command execution, configuration,
+backup/restore, logins/roles and linked-server or file access are refused in
+both modes. Each package README lists the exact statements for its dialect.
+
+On PostgreSQL, `@name` parameters are rewritten to positional `$n`
+placeholders and a multi-statement batch cannot carry parameters; `bigint`
+values that fit in a JavaScript number are returned as numbers, larger ones as
+strings.
 
 Statements without a result set report `rowsAffected`; `PRINT` output is
 returned under `messages`. SQL errors come back as `isError` results with the

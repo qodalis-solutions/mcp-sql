@@ -1,0 +1,63 @@
+{
+  "name": "@qodalis/mcp-sqlserver",
+  "version": "0.2.0",
+  "description": "Resilient Model Context Protocol (MCP) server for Microsoft SQL Server — self-healing connection pool, read-only guard, token-efficient results.",
+  "type": "module",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "bin": {
+    "mcp-sqlserver": "dist/src/cli.js"
+  },
+  "files": [
+    "dist/src",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "clean": "rm -rf dist",
+    "dev": "tsx src/cli.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --root ../.. --project sqlserver",
+    "test:integration": "RUN_INTEGRATION=1 vitest run --root ../.. --project sqlserver-integration",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "sql-server",
+    "mssql",
+    "sqlserver",
+    "azure-sql",
+    "claude",
+    "cursor",
+    "ai",
+    "database"
+  ],
+  "author": "Nicolae Lupei <nicolae.lupei@qodalis.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qodalis-solutions/mcp-sql",
+    "directory": "packages/sqlserver"
+  },
+  "homepage": "https://github.com/qodalis-solutions/mcp-sql#readme",
+  "bugs": {
+    "url": "https://github.com/qodalis-solutions/mcp-sql/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "^2.3.1",
+    "mssql": "^12.7.6",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/mssql": "^12.3.0"
+  }
+}

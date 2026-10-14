@@ -1,0 +1,59 @@
+{
+  "name": "@qodalis/mcp-sql-core",
+  "version": "0.2.0",
+  "description": "Shared core for the Qodalis resilient SQL MCP servers: self-healing pool manager, statement guard, result formatting, generic tools and server/CLI wiring.",
+  "type": "module",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
+    },
+    "./testing": {
+      "types": "./dist/src/testing/index.d.ts",
+      "default": "./dist/src/testing/index.js"
+    }
+  },
+  "files": [
+    "dist/src",
+    "LICENSE",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --root ../.. --project core",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "sql",
+    "database",
+    "connection-pool",
+    "resilience"
+  ],
+  "author": "Nicolae Lupei <nicolae.lupei@qodalis.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qodalis-solutions/mcp-sql",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/qodalis-solutions/mcp-sql#readme",
+  "bugs": {
+    "url": "https://github.com/qodalis-solutions/mcp-sql/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "^2.3.1",
+    "zod": "^4.6.7"
+  }
+}

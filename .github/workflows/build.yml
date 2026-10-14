@@ -13,6 +13,20 @@ jobs:
       matrix:
         node: ['22', '24', 'latest']
 
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: mcp
+          POSTGRES_PASSWORD: mcp
+          POSTGRES_DB: mcp
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U mcp"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
     steps:
       - uses: actions/checkout@v4
 
@@ -30,14 +44,26 @@ jobs:
       - name: Check formatting
         run: npm run check-format
 
-      - name: Typecheck
-        run: npm run typecheck
-
-      - name: Test with coverage
-        run: npm run test:coverage
-
       - name: Build
         run: npm run build
 
-      - name: Smoke-test the CLI
-        run: node dist/src/cli.js --version
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests with coverage
+        run: npm run test:coverage
+
+      - name: Postgres integration tests
+        run: npx vitest run --project postgres-integration
+        env:
+          RUN_INTEGRATION: '1'
+          POSTGRES_HOST: localhost
+          POSTGRES_USER: mcp
+          POSTGRES_PASSWORD: mcp
+          POSTGRES_DATABASE: mcp
+          POSTGRES_SSL: 'false'
+
+      - name: Smoke-test the CLIs
+        run: |
+          node packages/sqlserver/dist/src/cli.js --version
+          node packages/postgres/dist/src/cli.js --version
