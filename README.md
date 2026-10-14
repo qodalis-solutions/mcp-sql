@@ -82,43 +82,43 @@ Every setting is an environment variable. `MSSQL_*` names are accepted as
 fallbacks for the same keys, so configs written for other SQL Server MCP
 servers keep working.
 
-| Variable | Default | Description |
-| --- | --- | --- |
-| `SQLSERVER_HOST` | required | Host name or IP. |
-| `SQLSERVER_PORT` | `1433` | TCP port. |
-| `SQLSERVER_USER` | required | SQL login (or Windows user with `SQLSERVER_DOMAIN`). |
-| `SQLSERVER_PASSWORD` | required | Password. Redacted from every error. |
-| `SQLSERVER_DATABASE` | server default | Default database for every tool. |
-| `SQLSERVER_DATABASES` | none | Comma-separated allowlist of databases the tools may target with their `database` argument. The default database is always included. |
-| `SQLSERVER_DOMAIN` | none | Enables NTLM authentication with this domain. |
-| `SQLSERVER_ENCRYPT` | `true` | TLS for the connection. |
-| `SQLSERVER_TRUST_CERT` | `false` | Trust a self-signed server certificate. |
-| `SQLSERVER_READ_ONLY` | `true` | Reject persistent writes and DDL. See [read-only mode](#read-only-mode). |
-| `SQLSERVER_MAX_ROWS` | `1000` | Hard cap on rows returned by any tool. |
-| `SQLSERVER_CONNECTION_TIMEOUT` | `8000` | Milliseconds to wait for a connection before failing. |
-| `SQLSERVER_REQUEST_TIMEOUT` | `30000` | Milliseconds a single query may run. |
-| `SQLSERVER_POOL_MAX` | `10` | Connections per database pool. |
-| `SQLSERVER_USE_UTC` | `true` | Read `datetime` values as UTC (`false` uses the server's local time). |
-| `SQLSERVER_QUERY_LOG` | `false` | Log every statement to stderr. |
-| `SQLSERVER_ENV_FILE` | none | Path to a `.env` file (same as `--env-file`). |
+| Variable                       | Default        | Description                                                                                                                          |
+| ------------------------------ | -------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `SQLSERVER_HOST`               | required       | Host name or IP.                                                                                                                     |
+| `SQLSERVER_PORT`               | `1433`         | TCP port.                                                                                                                            |
+| `SQLSERVER_USER`               | required       | SQL login (or Windows user with `SQLSERVER_DOMAIN`).                                                                                 |
+| `SQLSERVER_PASSWORD`           | required       | Password. Redacted from every error.                                                                                                 |
+| `SQLSERVER_DATABASE`           | server default | Default database for every tool.                                                                                                     |
+| `SQLSERVER_DATABASES`          | none           | Comma-separated allowlist of databases the tools may target with their `database` argument. The default database is always included. |
+| `SQLSERVER_DOMAIN`             | none           | Enables NTLM authentication with this domain.                                                                                        |
+| `SQLSERVER_ENCRYPT`            | `true`         | TLS for the connection.                                                                                                              |
+| `SQLSERVER_TRUST_CERT`         | `false`        | Trust a self-signed server certificate.                                                                                              |
+| `SQLSERVER_READ_ONLY`          | `true`         | Reject persistent writes and DDL. See [read-only mode](#read-only-mode).                                                             |
+| `SQLSERVER_MAX_ROWS`           | `1000`         | Hard cap on rows returned by any tool.                                                                                               |
+| `SQLSERVER_CONNECTION_TIMEOUT` | `8000`         | Milliseconds to wait for a connection before failing.                                                                                |
+| `SQLSERVER_REQUEST_TIMEOUT`    | `30000`        | Milliseconds a single query may run.                                                                                                 |
+| `SQLSERVER_POOL_MAX`           | `10`           | Connections per database pool.                                                                                                       |
+| `SQLSERVER_USE_UTC`            | `true`         | Read `datetime` values as UTC (`false` uses the server's local time).                                                                |
+| `SQLSERVER_QUERY_LOG`          | `false`        | Log every statement to stderr.                                                                                                       |
+| `SQLSERVER_ENV_FILE`           | none           | Path to a `.env` file (same as `--env-file`).                                                                                        |
 
 ## Tools
 
-| Tool | Purpose |
-| --- | --- |
-| `test_connection` | Proves connectivity with a real query; reports server, database, login, server time and pool state. Never throws: returns `ok: false` with a hint instead. |
-| `get_server_info` | Version, edition, collation, machine and instance names. |
-| `list_databases` | Databases visible to the login. |
-| `list_tables` | User tables with approximate row counts; filter by schema or name. |
-| `list_views` | Views; filter by schema or name. |
-| `list_procedures` | Stored procedures and functions; filter by kind, schema or name. |
-| `describe_table` | Columns with full types, defaults, identity and computed flags; indexes with key and included columns; foreign keys in both directions. |
-| `get_foreign_keys` | Relationships for one table or the whole database, with columns and referential actions. |
-| `get_table_stats` | Row count and reserved/data/index size for one table or the largest tables. |
-| `get_object_definition` | T-SQL source of a view, procedure, function or trigger. |
-| `search_objects` | Find tables, views, routines and columns by name substring. |
-| `sample_data` | First or random rows from a table, optionally a column subset. |
-| `execute_query` | Run T-SQL with named parameters; JSON, Markdown or CSV output. |
+| Tool                    | Purpose                                                                                                                                                    |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `test_connection`       | Proves connectivity with a real query; reports server, database, login, server time and pool state. Never throws: returns `ok: false` with a hint instead. |
+| `get_server_info`       | Version, edition, collation, machine and instance names.                                                                                                   |
+| `list_databases`        | Databases visible to the login.                                                                                                                            |
+| `list_tables`           | User tables with approximate row counts; filter by schema or name.                                                                                         |
+| `list_views`            | Views; filter by schema or name.                                                                                                                           |
+| `list_procedures`       | Stored procedures and functions; filter by kind, schema or name.                                                                                           |
+| `describe_table`        | Columns with full types, defaults, identity and computed flags; indexes with key and included columns; foreign keys in both directions.                    |
+| `get_foreign_keys`      | Relationships for one table or the whole database, with columns and referential actions.                                                                   |
+| `get_table_stats`       | Row count and reserved/data/index size for one table or the largest tables.                                                                                |
+| `get_object_definition` | T-SQL source of a view, procedure, function or trigger.                                                                                                    |
+| `search_objects`        | Find tables, views, routines and columns by name substring.                                                                                                |
+| `sample_data`           | First or random rows from a table, optionally a column subset.                                                                                             |
+| `execute_query`         | Run T-SQL with named parameters; JSON, Markdown or CSV output.                                                                                             |
 
 Full argument reference: [docs/tools.md](docs/tools.md).
 
@@ -164,7 +164,13 @@ Details and the failure modes this covers: [docs/architecture.md](docs/architect
 The pieces are exported for embedding:
 
 ```ts
-import { PoolManager, SqlExecutor, createMssqlPool, createServer, loadConfig } from '@qodalis/mcp-sqlserver';
+import {
+  PoolManager,
+  SqlExecutor,
+  createMssqlPool,
+  createServer,
+  loadConfig,
+} from '@qodalis/mcp-sqlserver';
 
 const config = loadConfig(process.env);
 const manager = new PoolManager({ createPool: createMssqlPool(config) });
@@ -180,6 +186,7 @@ npm test                 # unit tests, no database required
 npm run test:integration # live tests, needs RUN_INTEGRATION=1 and SQLSERVER_* set
 npm run typecheck
 npm run build
+npx tsx scripts/check-reconnect.mts   # proves recovery from a network drop, no root needed
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).

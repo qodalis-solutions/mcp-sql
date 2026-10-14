@@ -33,6 +33,11 @@ npm run dev -- --env-file .env
 
   It is read-only and skips itself when the variables are missing.
 
+- `scripts/check-reconnect.mts` starts the built server over stdio behind a
+  local TCP proxy, kills and restores the proxy, and checks that the same
+  process answers again. Run it after `npm run build` with `SQLSERVER_*` set.
+  It is the closest thing to a VPN drop that needs no root.
+
 - Coverage thresholds are enforced by `npm run test:coverage`.
 
 ## Conventions
