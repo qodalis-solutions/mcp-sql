@@ -8,11 +8,14 @@ They exist because most database MCP servers stop working after a network blip:
 once the VPN drops they cache a dead connection pool and every later call fails
 until the assistant is restarted. These servers heal themselves instead.
 
-| Package                                        | Database                                                        | Install                         |
-| ---------------------------------------------- | --------------------------------------------------------------- | ------------------------------- |
-| [`@qodalis/mcp-sqlserver`](packages/sqlserver) | Microsoft SQL Server, Azure SQL, RDS for SQL Server, Fabric SQL | `npx -y @qodalis/mcp-sqlserver` |
-| [`@qodalis/mcp-postgres`](packages/postgres)   | PostgreSQL 12+, Aurora/RDS PostgreSQL, Neon, Supabase           | `npx -y @qodalis/mcp-postgres`  |
-| [`@qodalis/mcp-sql-core`](packages/core)       | Shared core for building further dialects                       | library only                    |
+| Package                                        | Database                                                                                           | Install                         |
+| ---------------------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------- |
+| [`@qodalis/mcp-sqlserver`](packages/sqlserver) | Microsoft SQL Server, Azure SQL, RDS for SQL Server, Fabric SQL                                    | `npx -y @qodalis/mcp-sqlserver` |
+| [`@qodalis/mcp-postgres`](packages/postgres)   | PostgreSQL 12+, Aurora/RDS PostgreSQL, Neon, Supabase, CockroachDB, Timescale                      | `npx -y @qodalis/mcp-postgres`  |
+| [`@qodalis/mcp-mysql`](packages/mysql)         | MySQL 8.0+, MariaDB 10.5+, Aurora/RDS MySQL, Azure Database for MySQL, Cloud SQL, PlanetScale      | `npx -y @qodalis/mcp-mysql`     |
+| [`@qodalis/mcp-oracle`](packages/oracle)       | Oracle Database 12.2+, 19c, 21c, 23ai/Free, Autonomous Database (thin driver, no client libraries) | `npx -y @qodalis/mcp-oracle`    |
+| [`@qodalis/mcp-sqlite`](packages/sqlite)       | SQLite files through the Node.js built-in driver (Node 22.13+), no native dependency               | `npx -y @qodalis/mcp-sqlite`    |
+| [`@qodalis/mcp-sql-core`](packages/core)       | Shared core for building further dialects                                                          | library only                    |
 
 Every server shares the same behaviour:
 
@@ -28,7 +31,8 @@ Every server shares the same behaviour:
 - **A database allowlist** with one pool per database, fast failure when the
   host is unreachable, and error messages that say what to do next.
 
-See each package's README for configuration and the tool reference, and
+See each package's README for configuration and the tool reference,
+[docs/tools.md](docs/tools.md) for the per-dialect notes, and
 [docs/architecture.md](docs/architecture.md) for how reconnection works.
 
 ## Development
