@@ -6,3 +6,4 @@ coverage/
 !.env.example
 *.tgz
 .DS_Store
+publish.log
