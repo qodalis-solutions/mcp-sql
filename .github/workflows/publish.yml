@@ -37,8 +37,12 @@ jobs:
           bash scripts/check-packed.sh
 
       - name: Publish packages that are not on npm yet
+        # `npm view` reads from eventually-consistent replicas, so a merge that
+        # lands minutes after a release can still see 404 for a version that is
+        # already published. The publish itself is authoritative: a 409
+        # "previously staged version" means it is there, and is not a failure.
         run: |
-          set -e
+          set -eo pipefail
           for dir in packages/core packages/sqlserver packages/postgres packages/mysql packages/oracle packages/sqlite; do
             [ -f "$dir/package.json" ] || continue
             name=$(node -p "require('./$dir/package.json').name")
@@ -48,8 +52,17 @@ jobs:
               continue
             fi
             echo "::group::Publishing $name@$version"
-            (cd "$dir" && npm publish --access public --provenance)
+            if (cd "$dir" && npm publish --access public --provenance 2>&1 | tee publish.log); then
+              echo "::endgroup::"
+              continue
+            fi
             echo "::endgroup::"
+            if grep -qE "E409|previously staged version|cannot publish over" "$dir/publish.log"; then
+              echo "$name@$version already exists on the registry (409 after replica lag); treating as published."
+              continue
+            fi
+            echo "::error::Publishing $name@$version failed."
+            exit 1
           done
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
